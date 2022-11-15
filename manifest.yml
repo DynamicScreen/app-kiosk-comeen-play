@@ -1,0 +1,26 @@
+# YAML
+id: app-kiosk-comeen-play
+name: app.name
+description: app.description
+logo: fa-regular fa-folder-tree
+version: 0.2.0
+channel: stable
+api-level: 1
+color: red
+category:
+author:
+    name: Comeen
+    email: support@comeen.com
+modules:
+    - name: modules.kiosk.name
+      logo: fa-regular fa-folder-tree
+      identifier: kiosk
+      color: red
+      type: slide
+      description: modules.kiosk.description
+      options:
+          vue:
+              component: src/Kiosk/Kiosk.ts
+              options: src/Kiosk/KioskOptions.ts
+          php:
+              handler: \Comeen\Kiosk\Kiosk\KioskHandler
