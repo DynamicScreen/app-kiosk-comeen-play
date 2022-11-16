@@ -1,13 +1,24 @@
 {
     "app": {
-        "name": "App name",
-        "description": "App description"
+        "name": "Kiosk",
+        "description": "Show pdf, images and videos from an interactive kiosk"
     },
     "modules": {
         "kiosk": {
-            "name": "Module name",
-            "description": "Module description",
+            "name": "Kiosk",
+            "description": "Show pdf, images and videos from an interactive kiosk",
             "options": {
+                "new_document_date": "Duration of a document considered new",
+                "days": "Days",
+                "new_document_date_desc": "How long should a document be considered new",
+                "notification_time": "Notification time",
+                "notification_time_desc": "The presence of new documents will be notified at this time",
+                "add": "Add",
+                "add_category": "Add category",
+                "current_categories": "Current categories",
+                "add_up_to": "You can add up to 8 categories",
+                "background_image": "Background Image",
+                "background_warning": "Il est recommandé d'utiliser une image de grande taille."
             }
         }
     }

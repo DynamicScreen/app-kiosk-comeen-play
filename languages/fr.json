@@ -1,13 +1,24 @@
 {
     "app": {
-        "name": "App name",
-        "description": "App description"
+        "name": "Kiosque",
+        "description": "Affichez des documents depuis un kiosque intéractif"
     },
     "modules": {
         "kiosk": {
-            "name": "Module name",
-            "description": "Module description",
+            "name": "Kiosque",
+            "description": "Affichez des documents depuis un kiosque intéractif",
             "options": {
+                "new_document_date": "Durée d'un document considéré nouveau",
+                "days": "Jours",
+                "new_document_date_desc": "Combien de temps un documents doit être considéré comme nouveau",
+                "notification_time": "Heure de notification",
+                "notification_time_desc": "La présence de nouveaux documents sera notifiée à cette heure-ci",
+                "add": "Ajouter",
+                "add_category": "Ajouter une catégorie",
+                "current_categories": "Catégories existantes",
+                "add_up_to": "Vous pouvez ajouter jusqu'à 8 catégories",
+                "background_image": "Image de fond",
+                "background_warning": "It's recommended to use a large image"
             }
         }
     }
