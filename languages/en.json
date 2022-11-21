@@ -8,6 +8,20 @@
             "name": "Kiosk",
             "description": "Show pdf, images and videos from an interactive kiosk",
             "options": {
+                "form": {
+                    "type": "Type",
+                    "files": "Files",
+                    "websites": "Websites",
+                    "category_name_placeholder": "Name of the category",
+                    "icon": "Icon",
+                    "category": "Category",
+                    "color": "Color",
+                    "folder_to_display": "Folder to display",
+                    "multiple_select": "You can select multiple folders",
+                    "link_name": "Name of the displayed link",
+                    "name": "Name",
+                    "secure_url": "Secure url address"
+                },
                 "new_document_date": "Duration of a document considered new",
                 "days": "Days",
                 "new_document_date_desc": "How long should a document be considered new",
@@ -18,7 +32,7 @@
                 "current_categories": "Current categories",
                 "add_up_to": "You can add up to 8 categories",
                 "background_image": "Background Image",
-                "background_warning": "Il est recommandé d'utiliser une image de grande taille."
+                "background_warning": "It's recommended to use a large image"
             }
         }
     }

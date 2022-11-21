@@ -8,6 +8,20 @@
             "name": "Kiosque",
             "description": "Affichez des documents depuis un kiosque intéractif",
             "options": {
+                "form": {
+                    "type": "Type",
+                    "files": "Fichiers",
+                    "websites": "Sites internet",
+                    "category_name_placeholder": "Nom de la catégorie",
+                    "icon": "Icône",
+                    "category": "Catégorie",
+                    "color": "Couleur",
+                    "folder_to_display": "Dossier à afficher",
+                    "multiple_select": "Vous pouvez sélectionner plusieurs dossiers",
+                    "link_name": "Nom du lien affiché",
+                    "name": "Nom",
+                    "secure_url": "Adresse URL sécurisée"
+                },
                 "new_document_date": "Durée d'un document considéré nouveau",
                 "days": "Jours",
                 "new_document_date_desc": "Combien de temps un documents doit être considéré comme nouveau",
@@ -18,7 +32,7 @@
                 "current_categories": "Catégories existantes",
                 "add_up_to": "Vous pouvez ajouter jusqu'à 8 catégories",
                 "background_image": "Image de fond",
-                "background_warning": "It's recommended to use a large image"
+                "background_warning": "Il est recommandé d'utiliser une image de grande taille"
             }
         }
     }
