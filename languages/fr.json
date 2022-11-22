@@ -9,6 +9,8 @@
             "description": "Affichez des documents depuis un kiosque intéractif",
             "options": {
                 "form": {
+                    "add_link": "Ajouter le lien",
+                    "create": "Créer",
                     "type": "Type",
                     "files": "Fichiers",
                     "websites": "Sites internet",
@@ -32,7 +34,8 @@
                 "current_categories": "Catégories existantes",
                 "add_up_to": "Vous pouvez ajouter jusqu'à 8 catégories",
                 "background_image": "Image de fond",
-                "background_warning": "Il est recommandé d'utiliser une image de grande taille"
+                "background_warning": "Il est recommandé d'utiliser une image de grande taille",
+                "no_categories": "Vous n'avez pas encore de catégorie"
             }
         }
     }

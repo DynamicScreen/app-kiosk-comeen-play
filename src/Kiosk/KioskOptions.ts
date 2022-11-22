@@ -2,13 +2,21 @@ import {
   ISlideOptionsContext,
   SlideOptionsModule, VueInstance
 } from "@comeen/comeen-play-sdk-js";
-import {h} from "vue";
+import CategoryForm from "./components/CategoryForm";
+import {colorClasses} from "./utils/_Colors";
 
 export type Category = {
     icon: string
     name: string
     type: string
     color: string
+    links?: Link[]
+    folders?: string[]
+}
+export type Link = {
+    icon: string
+    name: string
+    url: string
 }
 export type Categories = Category[]
 
@@ -22,94 +30,48 @@ export default class KioskOptionsModule extends SlideOptionsModule {
   };
 
   setup(props: Record<string, any>, vue: VueInstance, context: ISlideOptionsContext) {
-    const { h, ref, computed } = vue;
+    const { h, ref, computed, toRefs, watch } = vue;
     const update = context.update;
 
     const isFormOpen = ref<boolean>(false);
-    const categories = ref(update.option('categories'));
+    const categories = ref(update.option('categories').modelValue ?? []);
 
-    const icon = ref<string>("");
-    const type = ref<string>("");
-    const categoryName = ref<string>("");
+    //watch() catégorie update.option('categories'){onupdateOptions}
 
-      const { Field, TextInput, MediaPicker, NumberInput,
-          FolderPicker, Button, ColorPicker, Select, IconPicker } = this.context.components
+    const { Field, TextInput, MediaPicker, NumberInput, Button } = this.context.components;
 
-      const linkForm = () => {
-          return [h("div", {
-              class: "flex flex-row"
-          }, [
-              h(IconPicker),
-              h(Field, {label: this.t("modules.kiosk.options.form.name")}, [
-                  h(TextInput, {
-                      placeholder: this.t("modules.kiosk.options.form.link_name")
-                  })
-              ])
-          ]),
-              h(Field, {label: this.t("modules.kiosk.options.form.secure_url")}, [
-                  h(TextInput, {
-                      placeholder: "https://"
-                  })
-              ]),
-              h(Button, {
-                  theme: "primary",
-                  icon: "fa fa-plus"
-              })]
-      }
-
-      const categoryForm = (category: Category | null = null) => {
-          return h("div", {
-              class: (isFormOpen.value ? "h-fit opacity-100" : "h-0 opacity-0") +
-                  " transition-all duration-200 space-y-3 border border-gray-700 p-5",
-          }, [
-              h(Field, {
-                  label: this.t('modules.kiosk.options.form.icon'),
-                  class: "w-1/6"
-              }, [
-                  h(IconPicker),
-              ]),
-              h(Field, {
-                  label: this.t('modules.kiosk.options.form.type'),
-                  class: "w-2/5"
-              }, [
-                  h(Select, {
-                      options: [
-                          { id: "folders", name: this.t("modules.kiosk.options.form.files") },
-                          { id: "links", name: this.t("modules.kiosk.options.form.websites") }
-                      ],
-                  }),
-              ]),
-              h(Field, {
-                  label: this.t('modules.kiosk.options.form.category'),
-                  class: "w-2/4"
-              }, [
-                  h(TextInput, {
-                      placeholder: this.t('modules.kiosk.options.form.category_name_placeholder')
-                  }),
-              ]),
-              h(Field, {
-                  label: this.t('modules.kiosk.options.form.color'),
-              }, [
-                  h(ColorPicker)
-              ]),
-              h(Field, {
-                  label: this.t('modules.kiosk.options.form.folder_to_display')
-              },
-                  ...update.option("type") && type.value === "folders" ?
-                      [
-                          h(FolderPicker),
-                          h("span", {
-                              class: "text-xs text-gray-400"
-                          }, this.t('modules.kiosk.options.form.multiple_select'))
-                      ] :
-                      linkForm()
-              )
-          ])
-      }
-
-    const submitCategories = (category: Category) => {
-
+    const saveCategory = (emitValue: {category: Category, key: number | undefined}) => {
+        console.log("KEY KEY", emitValue.key, categories.value)
+        if (emitValue.key) {
+            categories.value[emitValue.key] = emitValue.category;
+        } else categories.value.push(emitValue.category);
     }
+
+    const renderCategory = (category: Category, key: number) => {
+        return h("div", {
+            class: "h-10 w-auto pl-3 width flex justify-between rounded border-2 transition hover:-translate-y-1 duration-300 hover:cursor-pointer items-center " + `text-${colorClasses[category.color]} border-${colorClasses[category.color]}`
+        }, [
+            h("div", {
+                class: "space-x-3 flex flex-row items-center"
+            }, [
+                h("i", {class: category.icon}),
+                h("span", {
+                    class: ""
+                }, category.name)
+            ]),
+            h("button", {
+                class: `w-8 z-10 h-full hover:scale-x-110 transition bg-${colorClasses[category.color]}`
+            }, [
+                h("i", {
+                    class: "fa fa-xmark text-sm text-white"
+                })
+            ])
+        ])
+    }
+
+    watch(() => categories, (newValue) => {
+        update.option('categories')["onUpdate:modelValue"](newValue);
+    }, {deep: true})
 
     return () => [
         h(Field, { label: this.t('modules.kiosk.options.new_document_date') }, [
@@ -141,19 +103,29 @@ export default class KioskOptionsModule extends SlideOptionsModule {
                 theme: "primary",
                 icon: "fa fa-plus",
                 onClick: () => { isFormOpen.value = true; }
-            }, [
-                h("span", {
-                    class: "text-white"
-                }, this.t('modules.kiosk.options.add_category'))
-            ])
+            }, this.t('modules.kiosk.options.add_category'))
         ]),
-        categoryForm(),
-        h(Field), { label: this.t('modules.kiosk.options.background_image') }, [
+        h(CategoryForm, {
+            formComponents: this.context.components,
+            open: isFormOpen.value,
+            t: this.t,
+            vue,
+            "onUpdate:category": (category) => saveCategory(category)
+        }),
+        h("div", {
+            class: "flex grid grid-cols-2 gap-4 justify-between w-full"
+        }, [
+            categories.value.length > 0 ?
+                categories.value.map((category, key) => renderCategory(category, key))
+                :
+                h("span", {class: "font-light text-gray-400"}, this.t("modules.kiosk.options.no_categories"))
+        ]),
+        h(Field, { label: this.t('modules.kiosk.options.background_image') }, [
             h(MediaPicker, { type: 'image', ...update.option("background_img") }),
             h("span", {
                 class: "text-xs text-gray-400"
             }, this.t('modules.kiosk.options.background_warning'))
-        ]
+        ])
     ];
   }
 }

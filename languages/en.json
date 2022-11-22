@@ -9,6 +9,8 @@
             "description": "Show pdf, images and videos from an interactive kiosk",
             "options": {
                 "form": {
+                    "add_link": "Add link",
+                    "create": "Create",
                     "type": "Type",
                     "files": "Files",
                     "websites": "Websites",
@@ -32,7 +34,8 @@
                 "current_categories": "Current categories",
                 "add_up_to": "You can add up to 8 categories",
                 "background_image": "Background Image",
-                "background_warning": "It's recommended to use a large image"
+                "background_warning": "It's recommended to use a large image",
+                "no_categories": "You don't have a category yet"
             }
         }
     }
