@@ -11,12 +11,13 @@
                 "form": {
                     "add_link": "Add link",
                     "create": "Create",
+                    "update": "Update",
+                    "delete": "Delete",
                     "type": "Type",
                     "files": "Files",
                     "websites": "Websites",
                     "category_name_placeholder": "Name of the category",
                     "icon": "Icon",
-                    "category": "Category",
                     "color": "Color",
                     "folder_to_display": "Folder to display",
                     "multiple_select": "You can select multiple folders",
@@ -24,6 +25,7 @@
                     "name": "Name",
                     "secure_url": "Secure url address"
                 },
+                "category": "Category",
                 "new_document_date": "Duration of a document considered new",
                 "days": "Days",
                 "new_document_date_desc": "How long should a document be considered new",

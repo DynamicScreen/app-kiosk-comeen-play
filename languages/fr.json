@@ -11,6 +11,8 @@
                 "form": {
                     "add_link": "Ajouter le lien",
                     "create": "Créer",
+                    "update": "Modifier",
+                    "delete": "Supprimer",
                     "type": "Type",
                     "files": "Fichiers",
                     "websites": "Sites internet",

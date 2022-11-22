@@ -1,27 +1,39 @@
-import {ComputedRef, defineComponent, h, PropType} from "vue";
+import {ComputedRef, defineComponent, h, PropType, watchEffect} from "vue";
 import {IComponentsList, VueInstance} from "@comeen/comeen-play-sdk-js";
 import {Category, Link} from "../KioskOptions";
 
 export default defineComponent({
     props: {
         formComponents: {type: Object as PropType<IComponentsList>, required: true},
-        open: {type: Boolean, required: true},
         t: {type: Function, required: true},
-        category: {type: Object as PropType<Category>, default: {icon: "fa fa-folder", name: "",type: "folders", color: ""}},
         vue: {type: Object as PropType<VueInstance>, required: true},
-        key: {type: Number, required: false}
+        open: {type: Boolean, required: true},
+        category: {type: Object as PropType<Category>, required: true},
+        categoryKey: {type: Number, required: false}
     },
     name: "CategoryForm",
-    emits: ["update:category"],
+    emits: ["update:category", "update:delete"],
     setup(props, {emit}) {
-        const { ref, toRef, toRefs, computed } = props.vue;
+        const { ref, computed, watch, toRef, unref } = props.vue;
 
-        const icon = ref(props.category.icon);
-        const name = ref(props.category.name);
-        const type = ref(props.category.type);
-        const color = ref(props.category.color);
+        const open = toRef(props,"open");
+        const icon = ref(props.category?.icon ?? "fa fa-folder");
+        const name = ref(props.category?.name ?? "");
+        const type = ref(props.category?.type ?? "folders");
+        const color = ref(props.category?.color ?? "");
         const links = ref(props.category?.links ?? []);
         const folders = ref(props.category?.folders ?? []);
+        const categoryKey = toRef(props, "categoryKey");
+
+        watch(() => props.category, (category) => {
+            icon.value = category.icon ?? "fa fa-folder";
+            name.value = category?.name ?? "";
+            type.value = category?.type ?? "";
+            color.value = category?.color ?? "";
+            links.value = category?.links ?? [];
+            folders.value = category?.folders ?? [];
+            open.value = props.open;
+        })
 
         const category = computed(() => {
             return {
@@ -47,14 +59,20 @@ export default defineComponent({
                 delete categoryToSave["folders"];
             }
             if (type.value === "folders") {
-                categoryToSave["folders"] = folders.value;
+                categoryToSave["folders"] = unref(folders);
                 delete categoryToSave["links"];
             }
 
+            console.log("SAVE CATEGORY 1", categoryToSave)
+
             emit("update:category", {
                 category: categoryToSave,
-                key: props.key
+                key: categoryKey.value
             });
+        }
+
+        const deleteCategory = () => {
+            emit("update:delete", categoryKey.value);
         }
 
         const addLink = () => {
@@ -80,7 +98,7 @@ export default defineComponent({
                     label: props.t('modules.kiosk.options.form.folder_to_display')
                 }, [
                     h(props.formComponents.FolderPicker, {
-                        modelValue: folders.value,
+                         modelValue: folders.value,
                         'onUpdate:modelValue': (value) => folders.value = value
                     }),
                     h("span", {
@@ -165,8 +183,7 @@ export default defineComponent({
 
         return () => h(
             "div", {
-                class: (props.open ? "h-fit opacity-100 space-y-3 border border-gray-600 p-5 bg-gray-50 rounded" : "h-0 opacity-0 invisible") +
-                    " transition-opacity duration-300",
+                class: props.open ? "h-fit opacity-100 space-y-3 border border-gray-600 p-5 bg-gray-50 rounded" : "h-0 opacity-0 hidden"
             }, [
                 h(props.formComponents.Field, {
                     label: props.t('modules.kiosk.options.form.icon'),
@@ -216,13 +233,21 @@ export default defineComponent({
                 h("div", {
                     class: "h-1 w-full bg-primary"
                 }),
-                h(props.formComponents.Button, {
-                    theme: "primary",
-                    icon: "fa fa-plus",
-                    disabled: isButtonDisabled.value,
-                    onClick: () => saveCategory()
-                }, props.t('modules.kiosk.options.form.create'))
+                h("div", {
+                    class: "space-x-3"
+                }, [
+                    h(props.formComponents.Button, {
+                        theme: "primary",
+                        icon: "fa fa-plus",
+                        disabled: isButtonDisabled.value,
+                        onClick: () => saveCategory()
+                    }, categoryKey.value !== undefined ? props.t("modules.kiosk.options.form.update") : props.t('modules.kiosk.options.form.create')),
+                    categoryKey.value !== undefined && h(props.formComponents.Button, {
+                        theme: "danger",
+                        icon: "fa fa-trash",
+                        onClick: () => deleteCategory()
+                    },  props.t("modules.kiosk.options.form.delete"))
+                ])
             ])
-
     }
 })

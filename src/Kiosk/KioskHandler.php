@@ -17,13 +17,6 @@ class KioskHandler extends SlideHandler
 
     public function getValidations($options = null): array
     {
-        return [
-            'rules' => [
-                'url' => ['required']
-            ],
-            'messages' => [
-                'url.required' => ""
-            ],
-        ];
+        return [];
     }
 }

@@ -36,20 +36,39 @@ export default class KioskOptionsModule extends SlideOptionsModule {
     const isFormOpen = ref<boolean>(false);
     const categories = ref(update.option('categories').modelValue ?? []);
 
-    //watch() catégorie update.option('categories'){onupdateOptions}
+    const editCategory = ref<Category | null>(null);
+    const editKey = ref<number | undefined>(undefined);
 
     const { Field, TextInput, MediaPicker, NumberInput, Button } = this.context.components;
 
     const saveCategory = (emitValue: {category: Category, key: number | undefined}) => {
-        console.log("KEY KEY", emitValue.key, categories.value)
-        if (emitValue.key) {
+        console.log("SAVE CATEGORY KIOSK OPTION 2")
+        if (emitValue.key !== undefined && emitValue.key >= 0) {
             categories.value[emitValue.key] = emitValue.category;
         } else categories.value.push(emitValue.category);
+        isFormOpen.value = false;
     }
 
-    const renderCategory = (category: Category, key: number) => {
+    const deleteCategory = (key: number) => {
+        console.log("KEY", key);
+        categories.value.splice(key, 1);
+        isFormOpen.value = false;
+    }
+
+    const renderCategory = (category, key: number) => {
+        if (category.folders && !Array.isArray(category.folders)) {
+            category.folders = JSON.parse(category.folders);
+        }
+        if (category.links && !Array.isArray(category.links)) {
+            category.links = JSON.parse(category.links);
+        }
         return h("div", {
-            class: "h-10 w-auto pl-3 width flex justify-between rounded border-2 transition hover:-translate-y-1 duration-300 hover:cursor-pointer items-center " + `text-${colorClasses[category.color]} border-${colorClasses[category.color]}`
+            class: "h-10 w-auto pl-3 width flex justify-between rounded border-2 transition hover:-translate-y-1 duration-300 hover:cursor-pointer items-center " + `text-${colorClasses[category.color]} border-${colorClasses[category.color]}`,
+            onClick: () => {
+                editCategory.value = category;
+                editKey.value = key;
+                isFormOpen.value = true
+            }
         }, [
             h("div", {
                 class: "space-x-3 flex flex-row items-center"
@@ -59,17 +78,18 @@ export default class KioskOptionsModule extends SlideOptionsModule {
                     class: ""
                 }, category.name)
             ]),
-            h("button", {
-                class: `w-8 z-10 h-full hover:scale-x-110 transition bg-${colorClasses[category.color]}`
+            h("div", {
+                class: `w-8 flex items-center justify-center h-full bg-${colorClasses[category.color]}`
             }, [
                 h("i", {
-                    class: "fa fa-xmark text-sm text-white"
+                    class: "fa fa-pen text-sm text-white"
                 })
             ])
         ])
     }
 
-    watch(() => categories, (newValue) => {
+    watch(categories, (newValue) => {
+        console.log("NEW VALUE", newValue)
         update.option('categories')["onUpdate:modelValue"](newValue);
     }, {deep: true})
 
@@ -98,27 +118,36 @@ export default class KioskOptionsModule extends SlideOptionsModule {
                 ...update.option("notification_time")
             })
         ]),
-        !isFormOpen.value && h(Field, { label: this.t('modules.kiosk.options.add') }, [
-            h(Button, {
-                theme: "primary",
-                icon: "fa fa-plus",
-                onClick: () => { isFormOpen.value = true; }
-            }, this.t('modules.kiosk.options.add_category'))
-        ]),
         h(CategoryForm, {
             formComponents: this.context.components,
             open: isFormOpen.value,
             t: this.t,
             vue,
-            "onUpdate:category": (category) => saveCategory(category)
+            category: editCategory.value ? editCategory.value : {icon: "fa fa-folder", name: "", type: "folders", color: "", folders: []},
+            categoryKey: editKey.value,
+            "onUpdate:category": (category) => saveCategory(category),
+            "onUpdate:delete": (key) => deleteCategory(key)
         }),
-        h("div", {
-            class: "flex grid grid-cols-2 gap-4 justify-between w-full"
-        }, [
-            categories.value.length > 0 ?
-                categories.value.map((category, key) => renderCategory(category, key))
-                :
-                h("span", {class: "font-light text-gray-400"}, this.t("modules.kiosk.options.no_categories"))
+        h(Field, {label: this.t('modules.kiosk.options.category')}, [
+            h("div", {
+                class: "flex grid grid-cols-2 gap-4 mt-2 justify-between w-full"
+            }, [
+                categories.value.length > 0 ?
+                    categories.value.map((category, key) => renderCategory(category, key))
+                    :
+                    h("span", {class: "font-light text-gray-400"}, this.t("modules.kiosk.options.no_categories"))
+            ]),
+        ]),
+        h(Field, { label: this.t('modules.kiosk.options.add') }, [
+            h(Button, {
+                theme: "primary",
+                icon: "fa fa-plus",
+                onClick: () => {
+                    editCategory.value = null;
+                    editKey.value = undefined;
+                    isFormOpen.value = true;
+                }
+            }, this.t('modules.kiosk.options.add_category'))
         ]),
         h(Field, { label: this.t('modules.kiosk.options.background_image') }, [
             h(MediaPicker, { type: 'image', ...update.option("background_img") }),
