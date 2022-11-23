@@ -11,6 +11,11 @@ category:
 author:
     name: Comeen
     email: support@comeen.com
+privileges:
+  needs_media:
+    - identifier: image-medias
+      type: image
+      why: privileges.needs_media.image.why
 modules:
     - name: modules.kiosk.name
       logo: fa-regular fa-folder-tree
@@ -19,6 +24,9 @@ modules:
       type: slide
       description: modules.kiosk.description
       options:
+          privileges:
+            needs_media:
+              - media
           vue:
               component: src/Kiosk/Kiosk.ts
               options: src/Kiosk/KioskOptions.ts
