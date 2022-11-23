@@ -14,7 +14,7 @@ export default defineComponent({
     name: "CategoryForm",
     emits: ["update:category", "update:delete"],
     setup(props, {emit}) {
-        const { ref, computed, watch, toRef, unref } = props.vue;
+        const { ref, computed, watch, toRef } = props.vue;
 
         const open = toRef(props,"open");
         const icon = ref(props.category?.icon ?? "fa fa-folder");
@@ -55,11 +55,11 @@ export default defineComponent({
         const saveCategory = () => {
             let categoryToSave = category.value;
             if (type.value === "links") {
-                categoryToSave["links"] = links.value;
+                categoryToSave["links"] = Array.from(links.value);
                 delete categoryToSave["folders"];
             }
             if (type.value === "folders") {
-                categoryToSave["folders"] = unref(folders);
+                categoryToSave["folders"] = Array.from(folders.value);
                 delete categoryToSave["links"];
             }
 
