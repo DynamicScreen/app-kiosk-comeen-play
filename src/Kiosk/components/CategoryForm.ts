@@ -1,4 +1,4 @@
-import {ComputedRef, defineComponent, h, PropType, watchEffect} from "vue";
+import {ComputedRef, defineComponent, h, PropType, toRaw, watchEffect} from "vue";
 import {IComponentsList, VueInstance} from "@comeen/comeen-play-sdk-js";
 import {Category, Link} from "../KioskOptions";
 
@@ -55,11 +55,11 @@ export default defineComponent({
         const saveCategory = () => {
             let categoryToSave = category.value;
             if (type.value === "links") {
-                categoryToSave["links"] = Array.from(links.value);
+                categoryToSave["links"] = toRaw(links.value);
                 delete categoryToSave["folders"];
             }
             if (type.value === "folders") {
-                categoryToSave["folders"] = Array.from(folders.value);
+                categoryToSave["folders"] = toRaw(folders.value);
                 delete categoryToSave["links"];
             }
 

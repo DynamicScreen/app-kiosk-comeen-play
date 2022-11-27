@@ -19,15 +19,22 @@ export default class KioskSlideModule extends SlideModule {
   }
 
   async onReady() {
-      for (const category of this.context.slide.data.categories) {
-          for (const folder of category.folders) {
-              for (const media of folder.medias) {
-                  await this.context.assetsStorage().then(async (ability: IAssetsStorageAbility) => {
-                      await ability.downloadAndGet(media.url, {noRetry: false},)
-                  })
-              }
-          }
-      }
+      await this.context.assetsStorage().then(async (ability: IAssetsStorageAbility) => {
+        for (const category of this.context.slide.data.categories) {
+            for (const folder of category.folders) {
+                console.log("medias", folder.medias)
+                for (const media of folder.medias) {
+                  try {
+                    console.log("Downloading", media.url)
+                    await ability.downloadAndGet(media.url, {noRetry: true},)
+                  } catch(e) {
+                    console.log("error")
+                    console.error(e);
+                  }
+                }
+            }
+        }
+      })
       return true;
   };
 
