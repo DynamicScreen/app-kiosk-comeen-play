@@ -18,7 +18,6 @@
                     "websites": "Sites internet",
                     "category_name_placeholder": "Nom de la catégorie",
                     "icon": "Icône",
-                    "category": "Catégorie",
                     "color": "Couleur",
                     "folder_to_display": "Dossier à afficher",
                     "multiple_select": "Vous pouvez sélectionner plusieurs dossiers",
@@ -26,6 +25,12 @@
                     "name": "Nom",
                     "secure_url": "Adresse URL sécurisée"
                 },
+                "view": {
+                    "home": "Accueil",
+                    "elements": "éléments",
+                    "select_folder": "Sélectionnez un dossier"
+                },
+                "category": "Catégorie",
                 "new_document_date": "Durée d'un document considéré nouveau",
                 "days": "Jours",
                 "new_document_date_desc": "Combien de temps un documents doit être considéré comme nouveau",

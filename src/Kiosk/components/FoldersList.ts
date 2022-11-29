@@ -1,10 +1,8 @@
-import {computed, defineComponent, h, PropType, ref} from "vue";
+import {defineComponent, h, PropType} from "vue";
 import {CategoryWithId} from "../Kiosk";
 import NameIcon from "./NameIcon";
 import Card from "./Card";
-import {Link} from "../KioskOptions";
 
-const SELECT_FOLDER = "Select a folder";
 export type Folder = {
     name: string
     medias: []
@@ -15,7 +13,10 @@ export default defineComponent({
         category: {type: Object as PropType<CategoryWithId>, required: true}
     },
     setup(props) {
-        const renderFolder = (folder: Link | Folder) => {
+        const {computed} = window.kiosk.vue;
+        const {t} = window.kiosk;
+
+        const renderFolder = (folder: Folder) => {
             return h(Card, {
                 name: folder.name,
                 numberOfFiles: folder.medias.length
@@ -27,21 +28,23 @@ export default defineComponent({
         })
 
         return () => h("div", {
-            class: "w-full h-full flex pl-8 space-y-6"
+            class: "w-full h-full flex pl-8 pt-4 space-y-6"
         }, [
             h("div", {
-                class: "flex flex-col"
+                class: "flex flex-col w-full space-y-8"
             }, [
                 h(NameIcon, {
                     color: props.category.color,
                     name: props.category.name,
                     icon: props.category.icon,
+                    iconStyle: `text-3xl text-${props.category.color}-500`,
+                    textStyle: `text-2xl text-${props.category.color}-500 font-bold`
                 }),
                 h("span", {
-                    class: "font-semibold text-xl"
-                }, SELECT_FOLDER),
+                    class: "font-semibold text-3xl text-gray-700"
+                }, t('modules.kiosk.options.view.select_folder')),
                 h("div", {
-                    class: "w-full h-3/5 flex flex-row justify-around grid-rows-4"
+                    class: "w-full h-3/5 grid grid-cols-4 gap-4"
                 }, [
                     folders.value.map((folder) => renderFolder(folder))
                 ])

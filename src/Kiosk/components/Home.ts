@@ -5,7 +5,7 @@ export default defineComponent({
     props: {
         categories: {type: Array, required: true}
     },
-    emits: ["update:openCategory"],
+    emits: ["openCategory"],
     setup(props, {emit}) {
         const renderCategory = (category) => {
             let numberOfFiles = 0;
@@ -13,13 +13,17 @@ export default defineComponent({
                 numberOfFiles += folder.medias.length
             }
 
-            return h(Card, {
-                onClick: () => emit("update:openCategory", category),
-                icon: category.icon,
-                name: category.name,
-                color: category.color,
-                numberOfFiles
-            })
+            return h("div", {
+                class: "flex justify-center"
+            }, [
+                h(Card, {
+                    onClick: () => emit("openCategory", category),
+                    icon: category.icon,
+                    name: category.name,
+                    color: category.color,
+                    numberOfFiles
+                })
+            ])
         }
 
         return () => h("div", {
@@ -29,9 +33,9 @@ export default defineComponent({
                 class: "w-full h-2/5"
             }, []),
             h("div", {
-                class: "w-full h-3/5 flex flex-row justify-around grid-rows-4"
+                class: "w-full h-3/5 grid grid-cols-4 gap-4"
             }, [
-                props.categories.map((category) => renderCategory(category))
+                props.categories.map((category) => renderCategory(category)),
             ])
         ])
     }

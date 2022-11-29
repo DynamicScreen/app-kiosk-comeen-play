@@ -1,4 +1,4 @@
-import {defineComponent, h, toRef} from "vue";
+import {defineComponent, h} from "vue";
 
 export default defineComponent({
     props: {
@@ -8,11 +8,12 @@ export default defineComponent({
         numberOfFiles: {type: Number, required: true}
     },
     setup(props) {
-        const files = props.numberOfFiles + " files";
+        const {t} = window.kiosk
+        const files = `${props.numberOfFiles} ${t('modules.kiosk.options.view.elements')}`;
 
         return () =>
             h("div", {
-                class: "flex flex-col justify-between p-3 h-40 w-60 bg-white rounded-lg shadow-lg cursor-pointer hover:-translate-y-2 transform duration-200",
+                class: "flex flex-col justify-between p-3 h-36 w-60 bg-white rounded-lg shadow-lg cursor-pointer hover:-translate-y-2 transform duration-200 border border-gray-200",
             }, [
                 h("i", {
                     class: props.icon + ` text-${props.color}-400 text-3xl`

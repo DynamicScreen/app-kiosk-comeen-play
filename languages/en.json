@@ -25,6 +25,11 @@
                     "name": "Name",
                     "secure_url": "Secure url address"
                 },
+                "view": {
+                    "home": "Home",
+                    "elements": "elements",
+                    "select_folder": "Select a folder"
+                },
                 "category": "Category",
                 "new_document_date": "Duration of a document considered new",
                 "days": "Days",

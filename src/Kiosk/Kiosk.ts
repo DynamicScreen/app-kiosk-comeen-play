@@ -5,7 +5,6 @@ import {
     VueInstance, IAssetsStorageAbility
 } from "@comeen/comeen-play-sdk-js";
 import Home from "./components/Home";
-import {computed} from "vue";
 import FolderLayout from "./components/FolderLayout";
 import {Category, Categories} from "./KioskOptions";
 
@@ -39,14 +38,19 @@ export default class KioskSlideModule extends SlideModule {
   };
 
   setup(props: Record<string, any>, vue: VueInstance, context: ISlideContext) {
-    const { h, reactive, ref } = vue;
+    const { h, reactive, ref, computed } = vue;
 
     const slide = reactive(props.slide) as IPublicSlide;
     this.context = reactive(props.slide.context);
 
+    window.kiosk = {
+        vue: vue,
+        t: this.t,
+        context: context
+    }
+
     const selectCategory = ref<CategoryWithId | null>(null);
     const isOnHome = ref(true);
-    const isOnCategory = ref(false);
 
     const categories = computed(() => {
         return slide.data.categories.map((category) => {
@@ -59,6 +63,7 @@ export default class KioskSlideModule extends SlideModule {
     })
 
     const gotoCategory = (category: CategoryWithId) => {
+        console.log("GO TO CATEGORY")
         isOnHome.value = false;
         selectCategory.value = category;
     }
@@ -77,11 +82,12 @@ export default class KioskSlideModule extends SlideModule {
           }, [
               isOnHome.value ? h(Home, {
                   categories: categories.value,
-                  "onUpdate:openCategory": (category) => gotoCategory(category)
+                  onOpenCategory: (category) => gotoCategory(category)
               }) : h(FolderLayout, {
                   categories: categories.value,
                   selectedCategoryId: selectCategoryId.value,
-                  "onUpdate:returnToHome": () => gotoHome()
+                  onOpenCategory: (category) => gotoCategory(category),
+                  onCloseCategory: () => gotoHome()
               }),
           ])
   }

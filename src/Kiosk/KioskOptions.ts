@@ -42,7 +42,6 @@ export default class KioskOptionsModule extends SlideOptionsModule {
     const { Field, TextInput, MediaPicker, NumberInput, Button } = this.context.components;
 
     const saveCategory = (emitValue: {category: Category, key: number | undefined}) => {
-        console.log("SAVE CATEGORY KIOSK OPTION 2")
         if (emitValue.key !== undefined && emitValue.key >= 0) {
             categories.value[emitValue.key] = emitValue.category;
         } else categories.value.push(emitValue.category);
@@ -50,7 +49,6 @@ export default class KioskOptionsModule extends SlideOptionsModule {
     }
 
     const deleteCategory = (key: number) => {
-        console.log("KEY", key);
         categories.value.splice(key, 1);
         isFormOpen.value = false;
     }
