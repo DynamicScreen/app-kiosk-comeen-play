@@ -12,12 +12,14 @@ export default defineComponent({
     props: {
         category: {type: Object as PropType<CategoryWithId>, required: true}
     },
-    setup(props) {
+    emits: ["openFolder"],
+    setup(props, {emit}) {
         const {computed} = window.kiosk.vue;
         const {t} = window.kiosk;
 
         const renderFolder = (folder: Folder) => {
             return h(Card, {
+                onClick: () => emit("openFolder", folder),
                 name: folder.name,
                 numberOfFiles: folder.medias.length
             })
@@ -28,18 +30,11 @@ export default defineComponent({
         })
 
         return () => h("div", {
-            class: "w-full h-full flex pl-8 pt-4 space-y-6"
+            class: "w-full h-full flex pt-12 space-y-6"
         }, [
             h("div", {
                 class: "flex flex-col w-full space-y-8"
             }, [
-                h(NameIcon, {
-                    color: props.category.color,
-                    name: props.category.name,
-                    icon: props.category.icon,
-                    iconStyle: `text-3xl text-${props.category.color}-500`,
-                    textStyle: `text-2xl text-${props.category.color}-500 font-bold`
-                }),
                 h("span", {
                     class: "font-semibold text-3xl text-gray-700"
                 }, t('modules.kiosk.options.view.select_folder')),

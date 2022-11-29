@@ -28,7 +28,8 @@
                 "view": {
                     "home": "Home",
                     "elements": "elements",
-                    "select_folder": "Select a folder"
+                    "select_folder": "Select a folder",
+                    "select_file": "Select a file"
                 },
                 "category": "Category",
                 "new_document_date": "Duration of a document considered new",
