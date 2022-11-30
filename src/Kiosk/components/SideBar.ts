@@ -21,7 +21,7 @@ export default defineComponent({
                     name: category.name,
                     icon: category.icon,
                     textStyle: `text-sm font-semibold ${category.uid === props.selectedCategoryId ? 'text-gray-400' : 'text-gray-600'}`,
-                    iconStyle: `text-2xl text-${category.color}-500`
+                    iconStyle: `text-3xl text-${category.color}-400`
                 })
             ])
         }

@@ -4,6 +4,7 @@ import SideBar from "./SideBar";
 import FoldersList from "./FoldersList";
 import List from "./List";
 import NameIcon from "./NameIcon";
+import PreviewModal from "./PreviewModal";
 
 const HOME = "Home"
 
@@ -15,7 +16,7 @@ export default defineComponent({
     emits: ["closeCategory", "openCategory"],
     setup(props, {emit}) {
         const {computed, ref} = window.kiosk.vue;
-        const {t} = window.kiosk;
+        const {t, context} = window.kiosk;
         const displayFolderList = ref(true);
         const selectedFolder = ref(null);
 
@@ -28,6 +29,8 @@ export default defineComponent({
             displayFolderList.value = true;
             selectedFolder.value = null;
         }
+
+        context.modal.showModal(PreviewModal, {test: "TEST"});
 
         const category = computed(() => {
             return props.categories.find((category) => category.uid === props.selectedCategoryId);

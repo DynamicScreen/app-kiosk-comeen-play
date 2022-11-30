@@ -11,28 +11,29 @@ export default defineComponent({
         const {computed, ref, Suspense} = window.kiosk.vue;
         const {t} = window.kiosk;
 
-        const renderPlaceholder = () => {
-            return h("div", {
-                class: "animate-pulse w-full h-16 flex flex-row items-center"
-            }, [
-                h("div", {
-                    class: "w-10 h-10 bg-slate-700 rounded-lg"
-                }),
-                h("div", {
-                    class: "bg-slate-700 w-full h-8 rounded-xl"
-                })
-            ])
+        const preview = (media: Partial<{filename: string, url: string, is_video: boolean}>) => {
+
         }
 
         const renderMedia = (media: Partial<{filename: string, url: string, is_video: boolean}>) => {
             return h(Suspense, null, {
-                    default: () => h(MediaItem, {
-                        name: media?.filename ?? "",
-                        url: media?.url ?? "",
-                        isImage: !media?.is_video ?? false
+                default: () => h(MediaItem, {
+                    onClick: () => preview(media),
+                    name: media?.filename ?? "",
+                    url: media?.url ?? "",
+                    isImage: !media?.is_video ?? false
+                }),
+                fallback: () => h("div", {
+                    class: "animate-pulse w-full h-16 flex flex-row items-center"
+                }, [
+                    h("div", {
+                        class: "w-10 h-10 bg-slate-700 rounded-lg"
                     }),
-                    fallback: () => renderPlaceholder()
-                })
+                    h("div", {
+                        class: "bg-slate-700 w-full h-8 rounded-xl"
+                    })
+                ])
+            })
         }
 
         return () => h("div", {
@@ -49,7 +50,7 @@ export default defineComponent({
                         onClick: () => emit("closeFolder"),
                     }, [
                         h("i", {
-                            class: "fa-solid fa-left text-2xl text-gray-600 cursor-pointer"
+                            class: "fa-solid fa-arrow-left text-2xl text-gray-600 cursor-pointer"
                         }),
                     ]),
                     h("span", {

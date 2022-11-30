@@ -13,7 +13,7 @@ export default defineComponent({
 
         return () =>
             h("div", {
-                class: "flex flex-col justify-between p-3 h-36 w-60 bg-white rounded-lg shadow-lg cursor-pointer hover:-translate-y-2 transform duration-200 border border-gray-200",
+                class: "flex flex-col justify-between p-5 h-36 w-60 bg-white rounded-lg shadow-lg cursor-pointer hover:-translate-y-2 transform duration-200 border border-gray-200",
             }, [
                 h("i", {
                     class: props.icon + ` text-${props.color}-400 text-3xl`

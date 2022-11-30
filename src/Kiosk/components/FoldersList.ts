@@ -39,7 +39,7 @@ export default defineComponent({
                     class: "font-semibold text-3xl text-gray-700"
                 }, t('modules.kiosk.options.view.select_folder')),
                 h("div", {
-                    class: "w-full h-3/5 grid grid-cols-4 gap-4"
+                    class: "w-full h-3/5 flex flex-row space-x-10 flex-wrap"
                 }, [
                     folders.value.map((folder) => renderFolder(folder))
                 ])

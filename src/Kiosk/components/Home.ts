@@ -33,7 +33,7 @@ export default defineComponent({
                 class: "w-full h-2/5"
             }, []),
             h("div", {
-                class: "w-full h-3/5 grid grid-cols-4 gap-4"
+                class: "w-full h-3/5 justify-center flex flex-row flex-wrap gap-16"
             }, [
                 props.categories.map((category) => renderCategory(category)),
             ])
