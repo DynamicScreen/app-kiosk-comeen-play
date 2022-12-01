@@ -47,6 +47,7 @@ export default class KioskSlideModule extends SlideModule {
     window.kiosk = {
         vue: vue,
         t: this.t,
+        notification_duration: slide.data.notification_duration,
         context: context
     }
 

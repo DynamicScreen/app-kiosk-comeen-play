@@ -35,18 +35,30 @@ export default defineComponent({
             }
         }
 
+        const renderNotificationBuble = () => {
+            return [
+                h("div", {class: "absolute bg-red-500 w-3 h-3 animate-ping-slow rounded-full -top-1 -left-1"}),
+                h("div", {
+                    class: "absolute flex justify-center items-center bg-red-500 w-3 h-3 rounded-full -top-1 -left-1"
+                })
+            ]
+        }
+
         return () => h("div", {
             onClick: () => previewMedia(),
-            class: "w-full h-16 flex flex-row items-center space-x-3 cursor-pointer"
+            class: "w-full pl-4 h-16 flex flex-row items-center space-x-3 cursor-pointer"
         }, [
             isImage.value ? h("img", {
-                class: "w-10 h-10 rounded-lg",
+                class: "w-10 h-10 rounded-lg relative",
                 src: displayableUrl.value
-            }) : h("div", {
-                class: "w-10 h-10 bg-gray-200 flex items-center justify-center rounded-lg"
-            }, h("i", {
+            }, renderNotificationBuble()) : h("div", {
+                class: "w-10 h-10 relative bg-gray-200 flex items-center justify-center rounded-lg"
+            },[
+                renderNotificationBuble(),
+                h("i", {
                   class: "fa-solid fa-video text-gray-700"
-            })),
+                })
+            ]),
             h("div", {
                 class: "w-full border-b border-gray-200 flex justify-between items-end"
             }, [

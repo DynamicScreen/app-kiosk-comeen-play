@@ -1,6 +1,19 @@
 import {defineComponent, h, PropType} from "vue";
 import Card from "./Card";
 import {Category} from "../KioskOptions";
+import moment from "moment";
+
+export function countNewFiles(medias: Partial<{updated_at: string}>[], daysConsideredNew: number): number {
+    let newFiles = 0;
+    const now = moment().subtract(49, "days");
+    for (const media of medias) {
+        const mediaWhen = moment(media.updated_at);
+        if (now.diff(mediaWhen, "days") < daysConsideredNew) {
+            newFiles += 1;
+        }
+    }
+    return newFiles;
+}
 
 export default defineComponent({
     props: {
@@ -8,11 +21,14 @@ export default defineComponent({
     },
     emits: ["openCategory"],
     setup(props, {emit}) {
+        const {notification_duration} = window.kiosk
+
         const renderCategory = (category) => {
             let numberOfFiles = 0;
-
+            let newFiles = 0;
             if (category.type === "folders") {
                 for (const folder of category.folders) {
+                    newFiles += countNewFiles(folder.medias, notification_duration);
                     numberOfFiles += folder.medias.length
                 }
             } else {
@@ -27,6 +43,7 @@ export default defineComponent({
                     icon: category.icon,
                     name: category.name,
                     color: category.color,
+                    newFiles,
                     numberOfFiles
                 })
             ])

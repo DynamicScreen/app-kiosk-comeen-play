@@ -39,6 +39,7 @@ class KioskHandler extends SlideHandler
 
         $this->addSlide([
             'categories' => $categoriesOptions,
+            'notification_duration' => $slide->getOption("notification_duration", null)
         ]);
     }
 

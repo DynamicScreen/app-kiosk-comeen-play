@@ -14,7 +14,7 @@ export default defineComponent({
             videoPlayer.value = await ability.createVideoPlayer(props.urlToDisplay);
             videoPlayer.value.setBoundaries(document.getElementById("video-container-kiosk"));
             await videoPlayer.value.prepare();
-            videoPlayer.value.controls = "controls";
+            videoPlayer.value.player.controls = "controls";
             videoPlayer.value.setVolume(20);
             await videoPlayer.value.play();
         })
@@ -22,12 +22,12 @@ export default defineComponent({
         return () => h(context.modal.ModalBody, null, {
             default: () => [
                 h("div", {
-                class: "flex justify-center items-center w-full h-full"
+                class: "flex justify-center items-center w-3/4 h-3/4"
             }, [
                 h("div", {
                     id: "video-container-kiosk",
                     ref: "videoContainer",
-                    class: "w-full h-72 max-h-3/4"
+                    class: "w-full h-full"
                 })
             ]),
                 h("div", {

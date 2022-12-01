@@ -2,6 +2,7 @@ import {defineComponent, h, PropType} from "vue";
 import {CategoryWithId} from "../Kiosk";
 import NameIcon from "./NameIcon";
 import Card from "./Card";
+import {countNewFiles} from "./Home";
 
 export type Folder = {
     name: string
@@ -14,16 +15,17 @@ export default defineComponent({
     },
     emits: ["openFolder"],
     setup(props, {emit}) {
-        console.log("CATE CATE EDLKEDN", props.category.type);
-
         const {computed} = window.kiosk.vue;
-        const {t} = window.kiosk;
+        const {t, notification_duration} = window.kiosk;
 
         const renderFolder = (folder: Folder) => {
+            const count = countNewFiles(folder.medias, notification_duration)
+
             return h(Card, {
                 onClick: () => emit("openFolder", folder),
                 name: folder.name,
-                numberOfFiles: folder.medias.length
+                numberOfFiles: folder.medias.length,
+                newFiles: count
             })
         }
 

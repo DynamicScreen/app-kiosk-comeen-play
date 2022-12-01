@@ -10,7 +10,7 @@ export default defineComponent({
         return () => h(context.modal.ModalBody, null, {
             default: () => h("img", {
                 src: props.urlToDisplay,
-                class: "h-96 w-96 object-cover"
+                class: "h-3/4 w-full object-cover"
             })
         })
     }

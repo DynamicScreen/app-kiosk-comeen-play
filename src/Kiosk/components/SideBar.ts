@@ -20,7 +20,7 @@ export default defineComponent({
                 h(NameIcon, {
                     name: category.name,
                     icon: category.icon,
-                    textStyle: `text-sm font-semibold ${category.uid === props.selectedCategoryId ? 'text-gray-400' : 'text-gray-600'}`,
+                    textStyle: `text-sm font-semibold ${category.uid === props.selectedCategoryId ? 'text-gray-600' : 'text-gray-400'}`,
                     iconStyle: `text-3xl text-${category.color}-400`
                 })
             ])

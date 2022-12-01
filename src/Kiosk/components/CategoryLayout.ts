@@ -65,7 +65,7 @@ export default defineComponent({
                     selectedCategoryId: props.selectedCategoryId
                 }),
                 h("div", {
-                    class: "w-full h-full pl-8 pt-5"
+                    class: "w-full h-full pl-4 pt-5"
                 }, [
                     h(NameIcon, {
                         color: category.value.color,
