@@ -1,6 +1,8 @@
 import {defineComponent, h, Suspense, toDisplayString} from "vue";
+import PreviewImageModal from "./PreviewImageModal";
+import PreviewVideoModal from "./PreviewVideoModal";
 
-const loadImage = (url: string) => {
+const loadMedia = (url: string) => {
     return new Promise(async (resolve, reject) => {
         const context = window.kiosk.context;
         const ability = await context.assetsStorage();
@@ -21,10 +23,20 @@ export default defineComponent({
     },
     async setup(props) {
         const {ref, toRef} = window.kiosk.vue;
+        const {context} = window.kiosk
         const isImage = toRef(props, "isImage");
-        const displayableUrl = isImage.value ? ref(await loadImage(props.url)) : "";
+        const displayableUrl = ref(await loadMedia(props.url));
+
+        const previewMedia = () => {
+            if (isImage.value) {
+                context.modal.showModal(PreviewImageModal, {urlToDisplay: displayableUrl})
+            } else {
+                context.modal.showModal(PreviewVideoModal, {urlToDisplay: displayableUrl})
+            }
+        }
 
         return () => h("div", {
+            onClick: () => previewMedia(),
             class: "w-full h-16 flex flex-row items-center space-x-3 cursor-pointer"
         }, [
             isImage.value ? h("img", {

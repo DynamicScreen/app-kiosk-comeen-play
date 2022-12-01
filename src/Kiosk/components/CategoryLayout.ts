@@ -2,9 +2,9 @@ import {defineComponent, h, PropType} from "vue";
 import {CategoryWithId} from "../Kiosk";
 import SideBar from "./SideBar";
 import FoldersList from "./FoldersList";
-import List from "./List";
 import NameIcon from "./NameIcon";
-import PreviewModal from "./PreviewModal";
+import MediasList from "./MediasList";
+import LinksList from "./LinksList";
 
 const HOME = "Home"
 
@@ -20,21 +20,37 @@ export default defineComponent({
         const displayFolderList = ref(true);
         const selectedFolder = ref(null);
 
+        const category = computed(() => {
+            return props.categories.find((category) => category.uid === props.selectedCategoryId);
+        })
+        const isFolderCategory = computed(() => {
+            return category.value.type === "folders";
+        })
+
         const gotoFolder = (folder) => {
             selectedFolder.value = folder;
             displayFolderList.value = false;
         }
-
         const goBack = () => {
             displayFolderList.value = true;
             selectedFolder.value = null;
         }
-
-        context.modal.showModal(PreviewModal, {test: "TEST"});
-
-        const category = computed(() => {
-            return props.categories.find((category) => category.uid === props.selectedCategoryId);
-        })
+        const renderFolder = () => {
+            return displayFolderList.value ?
+                h(FoldersList, {
+                    onOpenFolder: (folder) => gotoFolder(folder),
+                    category: category.value ?? props.categories[0]
+                }) :
+                h(MediasList, {
+                    onCloseFolder: () => goBack(),
+                    medias: selectedFolder.value?.medias ?? []
+                })
+        }
+        const renderLinks = () => {
+            return h(LinksList, {
+                links: category.value?.links ?? []
+            })
+        }
 
         return () => h("div", {
                 class: "w-full h-full flex flex-row"
@@ -58,15 +74,7 @@ export default defineComponent({
                         iconStyle: `text-3xl text-${category.value.color}-500`,
                         textStyle: `text-2xl text-${category.value.color}-500 font-bold`
                     }),
-                    displayFolderList.value ?
-                        h(FoldersList, {
-                            onOpenFolder: (folder) => gotoFolder(folder),
-                            category: category.value ?? props.categories[0]
-                        }) :
-                        h(List, {
-                            onCloseFolder: () => goBack(),
-                            medias: selectedFolder.value?.medias ?? []
-                        })
+                    isFolderCategory.value ? renderFolder() : renderLinks()
                 ]),
             ]
         )

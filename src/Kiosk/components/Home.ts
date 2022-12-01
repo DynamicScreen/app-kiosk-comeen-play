@@ -1,16 +1,22 @@
-import {defineComponent, h} from "vue";
+import {defineComponent, h, PropType} from "vue";
 import Card from "./Card";
+import {Category} from "../KioskOptions";
 
 export default defineComponent({
     props: {
-        categories: {type: Array, required: true}
+        categories: {type: Array as PropType<Category[]>, required: true}
     },
     emits: ["openCategory"],
     setup(props, {emit}) {
         const renderCategory = (category) => {
             let numberOfFiles = 0;
-            for (const folder of category.folders) {
-                numberOfFiles += folder.medias.length
+
+            if (category.type === "folders") {
+                for (const folder of category.folders) {
+                    numberOfFiles += folder.medias.length
+                }
+            } else {
+                numberOfFiles += category.links.length
             }
 
             return h("div", {

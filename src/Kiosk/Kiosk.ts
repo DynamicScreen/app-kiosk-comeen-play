@@ -5,8 +5,8 @@ import {
     VueInstance, IAssetsStorageAbility
 } from "@comeen/comeen-play-sdk-js";
 import Home from "./components/Home";
-import FolderLayout from "./components/FolderLayout";
 import {Category, Categories} from "./KioskOptions";
+import CategoryLayout from "./components/CategoryLayout";
 
 export type CategoryWithId = Category & {
     uid: number
@@ -20,16 +20,17 @@ export default class KioskSlideModule extends SlideModule {
   async onReady() {
       await this.context.assetsStorage().then(async (ability: IAssetsStorageAbility) => {
         for (const category of this.context.slide.data.categories) {
-            for (const folder of category.folders) {
-                console.log("medias", folder.medias)
-                for (const media of folder.medias) {
-                  try {
-                    console.log("Downloading", media.url)
-                    await ability.downloadAndGet(media.url, {noRetry: true},)
-                  } catch(e) {
-                    console.log("error")
-                    console.error(e);
-                  }
+            if (category.type === "folders") {
+                for (const folder of category.folders) {
+                    for (const media of folder.medias) {
+                        try {
+                            console.log("Downloading", media.url)
+                            await ability.downloadAndGet(media.url, {noRetry: true},)
+                        } catch(e) {
+                            console.log("error")
+                            console.error(e);
+                        }
+                    }
                 }
             }
         }
@@ -83,7 +84,7 @@ export default class KioskSlideModule extends SlideModule {
               isOnHome.value ? h(Home, {
                   categories: categories.value,
                   onOpenCategory: (category) => gotoCategory(category)
-              }) : h(FolderLayout, {
+              }) : h(CategoryLayout, {
                   categories: categories.value,
                   selectedCategoryId: selectCategoryId.value,
                   onOpenCategory: (category) => gotoCategory(category),

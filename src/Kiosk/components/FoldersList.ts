@@ -14,6 +14,8 @@ export default defineComponent({
     },
     emits: ["openFolder"],
     setup(props, {emit}) {
+        console.log("CATE CATE EDLKEDN", props.category.type);
+
         const {computed} = window.kiosk.vue;
         const {t} = window.kiosk;
 

@@ -29,7 +29,8 @@
                     "home": "Accueil",
                     "elements": "éléments",
                     "select_folder": "Sélectionnez un dossier",
-                    "select_file": "Sélectionnez un fichier"
+                    "select_file": "Sélectionnez un fichier",
+                    "select_link": "Sélectionnez une url"
                 },
                 "category": "Catégorie",
                 "new_document_date": "Durée d'un document considéré nouveau",
