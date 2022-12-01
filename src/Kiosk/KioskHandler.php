@@ -28,18 +28,18 @@ class KioskHandler extends SlideHandler
             }
         }
 
-//        $mediasAccessKey = $this->needed_medias();
-//
-//        if (is_array($mediasAccessKey)) {
-//            $mediasAccessKey = Arr::first($mediasAccessKey);
-//        }
-//
-//        dd($slide->getMedias());
-//        $bg_media = $slide->getMedias($mediasAccessKey);
+       $mediasAccessKey = $this->needed_medias();
+
+       if (is_array($mediasAccessKey)) {
+           $mediasAccessKey = Arr::first($mediasAccessKey);
+       }
+
+       $bg_media = collect($slide->getMedia($mediasAccessKey))->first();
 
         $this->addSlide([
             'categories' => $categoriesOptions,
-            'notification_duration' => $slide->getOption("notification_duration", null)
+            'notification_duration' => $slide->getOption("notification_duration", null),
+            'background' => Arr::get($bg_media, 'url'),
         ]);
     }
 

@@ -10,7 +10,7 @@ export default defineComponent({
         return () => h(context.modal.ModalBody, null, {
             default: () => h("iframe", {
                 src: props.url,
-                class: "h-96 w-96 object-cover"
+                class: "h-full w-full object-cover"
             })
         })
     }

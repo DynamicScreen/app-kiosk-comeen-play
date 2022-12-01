@@ -13,7 +13,7 @@ author:
     email: support@comeen.com
 privileges:
   needs_media:
-    - identifier: image-medias
+    - identifier: background_img
       type: image
       why: privileges.needs_media.image.why
 modules:
@@ -26,7 +26,7 @@ modules:
       options:
           privileges:
             needs_media:
-              - media
+              - background_img
           vue:
               component: src/Kiosk/Kiosk.ts
               options: src/Kiosk/KioskOptions.ts

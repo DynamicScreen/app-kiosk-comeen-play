@@ -22,7 +22,7 @@ export default defineComponent({
         return () => h(context.modal.ModalBody, null, {
             default: () => [
                 h("div", {
-                class: "flex justify-center items-center w-3/4 h-3/4"
+                class: "flex justify-center items-center h-full w-full"
             }, [
                 h("div", {
                     id: "video-container-kiosk",

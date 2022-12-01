@@ -1,15 +1,15 @@
 import {
-    ISlideContext,
-    IPublicSlide,
-    SlideModule,
-    VueInstance, IAssetsStorageAbility
+  ISlideContext,
+  IPublicSlide,
+  SlideModule,
+  VueInstance, IAssetsStorageAbility
 } from "@comeen/comeen-play-sdk-js";
 import Home from "./components/Home";
-import {Category, Categories} from "./KioskOptions";
+import { Category, Categories } from "./KioskOptions";
 import CategoryLayout from "./components/CategoryLayout";
 
 export type CategoryWithId = Category & {
-    uid: number
+  uid: number
 }
 
 export default class KioskSlideModule extends SlideModule {
@@ -18,79 +18,92 @@ export default class KioskSlideModule extends SlideModule {
   }
 
   async onReady() {
-      await this.context.assetsStorage().then(async (ability: IAssetsStorageAbility) => {
-        for (const category of this.context.slide.data.categories) {
-            if (category.type === "folders") {
-                for (const folder of category.folders) {
-                    for (const media of folder.medias) {
-                        try {
-                            console.log("Downloading", media.url)
-                            await ability.downloadAndGet(media.url, {noRetry: true},)
-                        } catch(e) {
-                            console.log("error")
-                            console.error(e);
-                        }
-                    }
-                }
+    await this.context.assetsStorage().then(async (ability: IAssetsStorageAbility) => {
+      for (const category of this.context.slide.data.categories) {
+        if (category.type === "folders") {
+          for (const folder of category.folders) {
+            for (const media of folder.medias) {
+              try {
+                console.log("Downloading", media.url)
+                await ability.downloadAndGet(media.url, { noRetry: true },)
+              } catch (e) {
+                console.log("error")
+                console.error(e);
+              }
             }
+          }
         }
-      })
-      return true;
+      }
+    })
+    return true;
   };
 
   setup(props: Record<string, any>, vue: VueInstance, context: ISlideContext) {
+const en = require("/home/scleriot/Dev/dynamicscreen/app-server/storage/apps//app-kiosk-comeen-play/0.2.0/languages/en.json");
+const fr = require("/home/scleriot/Dev/dynamicscreen/app-server/storage/apps//app-kiosk-comeen-play/0.2.0/languages/fr.json");
+const translator: any = this.context.translator;
+translator.addResourceBundle('en', 'kiosk', en);
+translator.addResourceBundle('fr', 'kiosk', fr);
+this.t = (key: string, namespace: string = 'kiosk') => translator.t(key, {ns: namespace});
+
     const { h, reactive, ref, computed } = vue;
 
     const slide = reactive(props.slide) as IPublicSlide;
     this.context = reactive(props.slide.context);
 
     window.kiosk = {
-        vue: vue,
-        t: this.t,
-        notification_duration: slide.data.notification_duration,
-        context: context
+      vue: vue,
+      t: this.t,
+      notification_duration: slide.data.notification_duration,
+      context: context
     }
 
     const selectCategory = ref<CategoryWithId | null>(null);
     const isOnHome = ref(true);
 
     const categories = computed(() => {
-        return slide.data.categories.map((category) => {
-            category['uid'] = Math.random();
-            return category;
-        })
+      return slide.data.categories.map((category) => {
+        category['uid'] = Math.random();
+        return category;
+      })
     });
     const selectCategoryId = computed(() => {
-        return selectCategory.value?.uid ?? -1
+      return selectCategory.value?.uid ?? -1
     })
 
     const gotoCategory = (category: CategoryWithId) => {
-        console.log("GO TO CATEGORY")
-        isOnHome.value = false;
-        selectCategory.value = category;
+      console.log("GO TO CATEGORY")
+      isOnHome.value = false;
+      selectCategory.value = category;
     }
 
     const gotoHome = () => {
-        isOnHome.value = true;
-        selectCategory.value = null;
+      isOnHome.value = true;
+      selectCategory.value = null;
     }
 
     this.context.onPrepare(async () => {
     });
 
-      return () =>
-          h("div", {
-              class: "flex w-full h-full bg-gray-50"
-          }, [
-              isOnHome.value ? h(Home, {
-                  categories: categories.value,
-                  onOpenCategory: (category) => gotoCategory(category)
-              }) : h(CategoryLayout, {
-                  categories: categories.value,
-                  selectedCategoryId: selectCategoryId.value,
-                  onOpenCategory: (category) => gotoCategory(category),
-                  onCloseCategory: () => gotoHome()
-              }),
-          ])
+    return () =>
+      h("div", {
+        class: [
+          "flex w-full h-full bg-gray-50",
+          slide.data.background ? "image-container bg-cover bg-no-repeat bg-center bg-" + slide.data.background : null,
+        ],
+        style: [
+          { backgroundImage: "url(" + slide.data.background + ")" },
+        ]
+      }, [
+        isOnHome.value ? h(Home, {
+          categories: categories.value,
+          onOpenCategory: (category) => gotoCategory(category)
+        }) : h(CategoryLayout, {
+          categories: categories.value,
+          selectedCategoryId: selectCategoryId.value,
+          onOpenCategory: (category) => gotoCategory(category),
+          onCloseCategory: () => gotoHome()
+        }),
+      ])
   }
 }
