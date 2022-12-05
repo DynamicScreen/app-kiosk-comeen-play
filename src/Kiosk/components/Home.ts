@@ -17,11 +17,15 @@ export function countNewFiles(medias: Partial<{updated_at: string}>[], daysConsi
 
 export default defineComponent({
     props: {
-        categories: {type: Array as PropType<Category[]>, required: true}
+        categories: {type: Array as PropType<Category[]>, required: true},
+        backgroundImg: {type: String, required: true}
     },
     emits: ["openCategory"],
     setup(props, {emit}) {
         const {notification_duration} = window.kiosk
+        const {toRef} = window.kiosk.vue
+        
+        const backgroundUrl = toRef(props, "backgroundImg");
 
         const renderCategory = (category) => {
             let numberOfFiles = 0;
@@ -50,7 +54,13 @@ export default defineComponent({
         }
 
         return () => h("div", {
-            class: "flex w-full p-10 flex flex-col"
+            class: [
+                "flex w-full p-10 flex flex-col",
+                backgroundUrl.value ? "image-container bg-cover bg-no-repeat bg-center bg-" + backgroundUrl.url : null
+            ],
+            style: [
+                { backgroundImage: "url(" + backgroundUrl.value + ")" },
+            ]
         }, [
             h("div", {
                 class: "w-full h-2/5"

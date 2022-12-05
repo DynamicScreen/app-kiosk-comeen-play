@@ -12,7 +12,7 @@ export default defineComponent({
         categoryKey: {type: Number, required: false}
     },
     name: "CategoryForm",
-    emits: ["update:category", "update:delete"],
+    emits: ["update:category", "update:delete", "close"],
     setup(props, {emit}) {
         const { ref, computed, watch, toRef } = props.vue;
 
@@ -63,8 +63,6 @@ export default defineComponent({
                 delete categoryToSave["links"];
             }
 
-            console.log("SAVE CATEGORY 1", categoryToSave)
-
             emit("update:category", {
                 category: categoryToSave,
                 key: categoryKey.value
@@ -94,9 +92,12 @@ export default defineComponent({
 
         const folderForm = () => {
             return [
-                h(props.formComponents.Field, {
-                    label: props.t('modules.kiosk.options.form.folder_to_display')
+                h("div", {
+                    class: "space-y-3"
                 }, [
+                    h("span", {
+                        class: "text font-semibold text-gray-700"
+                    }, props.t('modules.kiosk.options.form.folder_to_display')),
                     h(props.formComponents.FolderPicker, {
                          modelValue: folders.value,
                         'onUpdate:modelValue': (value) => folders.value = value
@@ -110,6 +111,9 @@ export default defineComponent({
 
         const linkForm = () => {
             return [
+                h("span", {
+                    class: "text font-semibold text-gray-700"
+                }, props.t("modules.kiosk.options.form.your_websites")),
                 h("div", {
                 class: "flex flex-row space-x-3"
             }, [
@@ -183,32 +187,16 @@ export default defineComponent({
 
         return () => h(
             "div", {
-                class: props.open ? "h-fit opacity-100 space-y-3 border border-gray-600 p-5 bg-gray-50 rounded" : "h-0 opacity-0 hidden"
+                class: (props.open ? "h-fit opacity-100 space-y-3 border border-gray-600 p-5 bg-gray-50 rounded" : "h-0 opacity-0 hidden") + " relative"
             }, [
-                h(props.formComponents.Field, {
-                    label: props.t('modules.kiosk.options.form.icon'),
-                    class: "w-1/6"
+                h("div", {
+                    class: "w-5 h-5 rounded absolute top-0 right-0 flex justify-center items-center cursor-pointer",
+                    onClick: () => emit("close")
                 }, [
-                    h(props.formComponents.IconPicker, {
-                        modelValue: icon.value,
-                        'onUpdate:modelValue': (value) => icon.value = value
-                    }),
+                    h("i", {class: "fa-regular fa-xmark text-gray-500 text-xl"})
                 ]),
                 h(props.formComponents.Field, {
-                    label: props.t('modules.kiosk.options.form.type'),
-                    class: "w-2/5"
-                }, [
-                    h(props.formComponents.Select, {
-                        options: [
-                            { id: "folders", name: props.t("modules.kiosk.options.form.files") },
-                            { id: "links", name: props.t("modules.kiosk.options.form.websites") }
-                        ],
-                        modelValue: type.value,
-                        'onUpdate:modelValue': (value) => type.value = value
-                    }),
-                ]),
-                h(props.formComponents.Field, {
-                    label: props.t('modules.kiosk.options.form.category'),
+                    label: props.t('modules.kiosk.options.form.name'),
                     class: "w-2/4"
                 }, [
                     h(props.formComponents.TextInput, {
@@ -216,6 +204,32 @@ export default defineComponent({
                         modelValue: name.value,
                         'onUpdate:modelValue': (value) => name.value = value
                     }),
+                ]),
+                h("div", {
+                    class: "flex flex-row space-x-4 w-full"
+                }, [
+                    h(props.formComponents.Field, {
+                        label: props.t('modules.kiosk.options.form.icon'),
+                        class: "w-1/5"
+                    }, [
+                        h(props.formComponents.IconPicker, {
+                            modelValue: icon.value,
+                            'onUpdate:modelValue': (value) => icon.value = value
+                        }),
+                    ]),
+                    h(props.formComponents.Field, {
+                        label: props.t('modules.kiosk.options.form.type'),
+                        class: "w-full"
+                    }, [
+                        h(props.formComponents.Select, {
+                            options: [
+                                { id: "folders", name: props.t("modules.kiosk.options.form.files") },
+                                { id: "links", name: props.t("modules.kiosk.options.form.websites") }
+                            ],
+                            modelValue: type.value,
+                            'onUpdate:modelValue': (value) => type.value = value
+                        }),
+                    ]),
                 ]),
                 h(props.formComponents.Field, {
                     label: props.t('modules.kiosk.options.form.color'),
@@ -227,8 +241,12 @@ export default defineComponent({
                 ]),
                 h("div", {
                         class: "py-2 space-y-3"
-                    },
-                    type.value === "folders" ? folderForm() : linkForm()
+                    }, [
+                        h("div", {
+                            class: "border-t w-full border-gray-500 mb-4"
+                        }),
+                        type.value === "folders" ? folderForm() : linkForm()
+                    ]
                 ),
                 h("div", {
                     class: "h-1 w-full bg-primary"

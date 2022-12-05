@@ -7,6 +7,7 @@ export default defineComponent({
         link: {type: Object as PropType<Link>, required: true}
     },
     setup(props, {emit}) {
+        //@ts-ignore
         const {context} = window.kiosk
 
         const previewLink = () => {

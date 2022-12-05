@@ -39,12 +39,6 @@ export default class KioskSlideModule extends SlideModule {
   };
 
   setup(props: Record<string, any>, vue: VueInstance, context: ISlideContext) {
-const en = require("/home/scleriot/Dev/dynamicscreen/app-server/storage/apps//app-kiosk-comeen-play/0.2.0/languages/en.json");
-const fr = require("/home/scleriot/Dev/dynamicscreen/app-server/storage/apps//app-kiosk-comeen-play/0.2.0/languages/fr.json");
-const translator: any = this.context.translator;
-translator.addResourceBundle('en', 'kiosk', en);
-translator.addResourceBundle('fr', 'kiosk', fr);
-this.t = (key: string, namespace: string = 'kiosk') => translator.t(key, {ns: namespace});
 
     const { h, reactive, ref, computed } = vue;
 
@@ -60,6 +54,7 @@ this.t = (key: string, namespace: string = 'kiosk') => translator.t(key, {ns: na
 
     const selectCategory = ref<CategoryWithId | null>(null);
     const isOnHome = ref(true);
+    const backgroundUrl = ref(slide.data.background ?? "")
 
     const categories = computed(() => {
       return slide.data.categories.map((category) => {
@@ -83,26 +78,25 @@ this.t = (key: string, namespace: string = 'kiosk') => translator.t(key, {ns: na
     }
 
     this.context.onPrepare(async () => {
+        if (slide.data.background) {
+            const ability = await context.assetsStorage();
+            backgroundUrl.value = await ability.getDisplayableAsset(slide.data.background);
+        }
     });
 
     return () =>
       h("div", {
-        class: [
-          "flex w-full h-full bg-gray-50",
-          slide.data.background ? "image-container bg-cover bg-no-repeat bg-center bg-" + slide.data.background : null,
-        ],
-        style: [
-          { backgroundImage: "url(" + slide.data.background + ")" },
-        ]
+        class: "flex w-full h-full bg-gray-50",
       }, [
         isOnHome.value ? h(Home, {
-          categories: categories.value,
-          onOpenCategory: (category) => gotoCategory(category)
+            backgroundImg: backgroundUrl.value,
+            categories: categories.value,
+            onOpenCategory: (category) => gotoCategory(category)
         }) : h(CategoryLayout, {
-          categories: categories.value,
-          selectedCategoryId: selectCategoryId.value,
-          onOpenCategory: (category) => gotoCategory(category),
-          onCloseCategory: () => gotoHome()
+            categories: categories.value,
+            selectedCategoryId: selectCategoryId.value,
+            onOpenCategory: (category) => gotoCategory(category),
+            onCloseCategory: () => gotoHome()
         }),
       ])
   }

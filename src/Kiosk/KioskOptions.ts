@@ -53,6 +53,12 @@ export default class KioskOptionsModule extends SlideOptionsModule {
         isFormOpen.value = false;
     }
 
+    const close = () => {
+        isFormOpen.value = false;
+        editCategory.value = null;
+        editKey.value = undefined;
+    }
+
     const renderCategory = (category, key: number) => {
         if (category.folders && !Array.isArray(category.folders)) {
             category.folders = JSON.parse(category.folders);
@@ -116,16 +122,12 @@ export default class KioskOptionsModule extends SlideOptionsModule {
                 ...update.option("notification_time")
             })
         ]),
-        h(CategoryForm, {
-            formComponents: this.context.components,
-            open: isFormOpen.value,
-            t: this.t,
-            vue,
-            category: editCategory.value ? editCategory.value : {icon: "fa fa-folder", name: "", type: "folders", color: "", folders: []},
-            categoryKey: editKey.value,
-            "onUpdate:category": (category) => saveCategory(category),
-            "onUpdate:delete": (key) => deleteCategory(key)
-        }),
+        h(Field, { label: this.t('modules.kiosk.options.background_image') }, [
+            h(MediaPicker, { type: 'image', ...update.option("background_img") }),
+            h("span", {
+                class: "text-xs text-gray-400"
+            }, this.t('modules.kiosk.options.background_warning'))
+        ]),
         h(Field, {label: this.t('modules.kiosk.options.category')}, [
             h("div", {
                 class: "flex grid grid-cols-2 gap-4 mt-2 justify-between w-full"
@@ -136,6 +138,17 @@ export default class KioskOptionsModule extends SlideOptionsModule {
                     h("span", {class: "font-light text-gray-400"}, this.t("modules.kiosk.options.no_categories"))
             ]),
         ]),
+        h(CategoryForm, {
+            formComponents: this.context.components,
+            open: isFormOpen.value,
+            t: this.t,
+            vue,
+            category: editCategory.value ? editCategory.value : {icon: "fa fa-folder", name: "", type: "folders", color: "", folders: []},
+            categoryKey: editKey.value,
+            onClose: () => close(),
+            "onUpdate:category": (category) => saveCategory(category),
+            "onUpdate:delete": (key) => deleteCategory(key)
+        }),
         h(Field, { label: this.t('modules.kiosk.options.add') }, [
             h(Button, {
                 theme: "primary",
@@ -147,12 +160,6 @@ export default class KioskOptionsModule extends SlideOptionsModule {
                 }
             }, this.t('modules.kiosk.options.add_category'))
         ]),
-        h(Field, { label: this.t('modules.kiosk.options.background_image') }, [
-            h(MediaPicker, { type: 'image', ...update.option("background_img") }),
-            h("span", {
-                class: "text-xs text-gray-400"
-            }, this.t('modules.kiosk.options.background_warning'))
-        ])
     ];
   }
 }
