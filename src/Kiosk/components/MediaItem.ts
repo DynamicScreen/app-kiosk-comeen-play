@@ -2,6 +2,7 @@ import {defineComponent, h, PropType, Suspense, toDisplayString} from "vue";
 import PreviewImageModal from "./PreviewImageModal";
 import PreviewVideoModal from "./PreviewVideoModal";
 import PreviewPDFModal from "./PreviewPDFModal";
+import moment from "moment";
 
 const loadMedia = (url: string) => {
     return new Promise(async (resolve, reject) => {
@@ -21,21 +22,23 @@ export default defineComponent({
         url: {type: String, required: true},
         name: {type: String, required: true},
         type: {type: String, required: true},
+        created_at: {type: String},
+        updated_at: {type: String},
         page: {type: Number, default: 1}
     },
     async setup(props) {
         const {ref, toRef, computed} = window.kiosk.vue;
         const {context} = window.kiosk
         const mediaType = toRef(props, "type");
-        const displayableUrl = mediaType.value === "application" ? props.url : ref(await loadMedia(props.url));
+        const displayableUrl = ref(await loadMedia(props.url));
 
         const previewMedia = () => {
             if (mediaType.value === "video") {
-                context.modal.showModal(PreviewVideoModal, {urlToDisplay: displayableUrl});
+                context.modal.showModal(PreviewVideoModal, {urlToDisplay: displayableUrl, name: props.name});
             } else if (mediaType.value === "application") {
-                context.modal.showModal(PreviewPDFModal, {urlToDisplay: displayableUrl, page: props.page});
+                context.modal.showModal(PreviewPDFModal, {urlToDisplay: displayableUrl, page: props.page, name: props.name});
             } else {
-                context.modal.showModal(PreviewImageModal, {urlToDisplay: displayableUrl});
+                context.modal.showModal(PreviewImageModal, {urlToDisplay: displayableUrl, name: props.name});
             }
         }
 
@@ -71,12 +74,18 @@ export default defineComponent({
         }
 
         const renderNotificationBuble = () => {
+          const {notification_duration} = window.kiosk
+          const mediaWhen = moment(props.updated_at);
+          if (moment().diff(mediaWhen, "days") < notification_duration) {
             return [
                 h("div", {class: "absolute bg-red-500 w-3 h-3 animate-ping-slow rounded-full -top-1 -left-1"}),
                 h("div", {
                     class: "absolute flex justify-center items-center bg-red-500 w-3 h-3 rounded-full -top-1 -left-1"
                 })
             ]
+          } else {
+            return null
+          }
         }
 
         return () => h("div", {
@@ -92,7 +101,7 @@ export default defineComponent({
                 }, props.name),
                 h("span", {
                     class: "text-xs text-gray-400"
-                }, "Il y a 20 heures")
+                }, moment(props.updated_at).fromNow())
             ])
         ])
     }

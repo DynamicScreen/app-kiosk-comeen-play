@@ -11,7 +11,7 @@ export default defineComponent({
         const {context} = window.kiosk
 
         const previewLink = () => {
-            context.modal.showModal(PreviewLinkModal, {url: props.link.url})
+            context.modal.showModal(PreviewLinkModal, {url: props.link.url, name: props.link.name})
         }
 
         return () => h("div", {

@@ -19,6 +19,9 @@ export default class KioskSlideModule extends SlideModule {
 
   async onReady() {
     await this.context.assetsStorage().then(async (ability: IAssetsStorageAbility) => {
+      if (this.context.slide.data.background) {
+        await ability.downloadAndGet(this.context.slide.data.background);
+      }
       for (const category of this.context.slide.data.categories) {
         if (category.type === "folders") {
           for (const folder of category.folders) {
@@ -39,6 +42,13 @@ export default class KioskSlideModule extends SlideModule {
   };
 
   setup(props: Record<string, any>, vue: VueInstance, context: ISlideContext) {
+    const en = require("/home/scleriot/Dev/dynamicscreen/app-server/storage/apps//app-kiosk-comeen-play/0.2.0/languages/en.json");
+    const fr = require("/home/scleriot/Dev/dynamicscreen/app-server/storage/apps//app-kiosk-comeen-play/0.2.0/languages/fr.json");
+    const translator: any = this.context.translator;
+    translator.addResourceBundle('en', 'kiosk', en);
+    translator.addResourceBundle('fr', 'kiosk', fr);
+    this.t = (key: string, namespace: string = 'kiosk') => translator.t(key, { ns: namespace });
+
 
     const { h, reactive, ref, computed } = vue;
 
@@ -78,10 +88,10 @@ export default class KioskSlideModule extends SlideModule {
     }
 
     this.context.onPrepare(async () => {
-        if (slide.data.background) {
-            const ability = await context.assetsStorage();
-            backgroundUrl.value = await ability.getDisplayableAsset(slide.data.background);
-        }
+      if (slide.data.background) {
+        const ability = await context.assetsStorage();
+        backgroundUrl.value = await ability.downloadAndGet(slide.data.background);
+      }
     });
 
     return () =>
@@ -89,14 +99,14 @@ export default class KioskSlideModule extends SlideModule {
         class: "flex w-full h-full bg-gray-50",
       }, [
         isOnHome.value ? h(Home, {
-            backgroundImg: backgroundUrl.value,
-            categories: categories.value,
-            onOpenCategory: (category) => gotoCategory(category)
+          backgroundImg: backgroundUrl.value,
+          categories: categories.value,
+          onOpenCategory: (category) => gotoCategory(category)
         }) : h(CategoryLayout, {
-            categories: categories.value,
-            selectedCategoryId: selectCategoryId.value,
-            onOpenCategory: (category) => gotoCategory(category),
-            onCloseCategory: () => gotoHome()
+          categories: categories.value,
+          selectedCategoryId: selectCategoryId.value,
+          onOpenCategory: (category) => gotoCategory(category),
+          onCloseCategory: () => gotoHome()
         }),
       ])
   }

@@ -56,10 +56,10 @@ export default defineComponent({
         return () => h("div", {
             class: [
                 "flex w-full p-10 flex flex-col",
-                backgroundUrl.value ? "image-container bg-cover bg-no-repeat bg-center bg-" + backgroundUrl.url : null
+                backgroundUrl.value ? "image-container bg-cover bg-no-repeat bg-center" : null
             ],
             style: [
-                { backgroundImage: "url(" + backgroundUrl.value + ")" },
+                { backgroundImage: "url(" + backgroundUrl.value.url + ")" },
             ]
         }, [
             h("div", {

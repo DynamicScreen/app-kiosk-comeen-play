@@ -5,11 +5,11 @@
   "main": "webpack.config.js",
   "author": "Comeen",
   "dependencies": {
-    "@types/node": "^18.11.10",
+    "@tato30/vue-pdf": "^1.2.4",
+    "@types/node": "^18.11.11",
     "file-loader": "^6.2.0",
     "i18next": "^20.4.0",
     "moment": "^2.29.4",
-    "pdfvuer": "^2.0.1",
     "sass": "^1.54.9",
     "sass-loader": "^13.0.2",
     "style-loader": "^3.3.1",

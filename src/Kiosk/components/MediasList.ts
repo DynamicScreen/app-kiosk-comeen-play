@@ -4,19 +4,21 @@ import MediaItem from "./MediaItem";
 
 export default defineComponent({
     props: {
-        medias: {type: Array as PropType<Partial<{ filename: string, url: string, mime: string }>[]>, required: true}
+        medias: {type: Array as PropType<Partial<{ filename: string, url: string, mime: string, created_at: string, updated_at: string }>[]>, required: true}
     },
     emits: ["closeFolder"],
     setup(props, {emit}) {
         const {computed, ref, Suspense} = window.kiosk.vue;
         const {t} = window.kiosk;
 
-        const renderMedia = (media: Partial<{filename: string, url: string, mime: string}>) => {
+        const renderMedia = (media: Partial<{filename: string, url: string, mime: string, created_at: string, updated_at: string}>) => {
             return h(Suspense, null, {
                 default: () => h(MediaItem, {
                     name: media?.filename ?? "",
                     url: media?.url ?? "",
-                    type: media.mime?.split('/')[0] ?? "image"
+                    type: media.mime?.split('/')[0] ?? "image",
+                    created_at: media?.created_at ?? "",
+                    updated_at: media?.updated_at ?? "",
                 }),
                 fallback: () => h("div", {
                     class: "animate-pulse w-full h-16 flex flex-row items-center"
@@ -52,7 +54,7 @@ export default defineComponent({
                         class: "font-semibold text-3xl text-gray-600"
                     }, t('modules.kiosk.options.view.select_file'))
                 ]),
-                props.medias.map((media: Partial<{ filename: string, url: string, mime: string }>) => renderMedia(media))
+                props.medias.map((media: Partial<{ filename: string, url: string, mime: string, created_at: string, updated_at: string }>) => renderMedia(media))
             ]),
         ])
     }
