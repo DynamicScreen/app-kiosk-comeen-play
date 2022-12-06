@@ -5,7 +5,7 @@ import moment from "moment";
 
 export function countNewFiles(medias: Partial<{updated_at: string}>[], daysConsideredNew: number): number {
     let newFiles = 0;
-    const now = moment().subtract(49, "days");
+    const now = moment();
     for (const media of medias) {
         const mediaWhen = moment(media.updated_at);
         if (now.diff(mediaWhen, "days") < daysConsideredNew) {
@@ -24,7 +24,7 @@ export default defineComponent({
     setup(props, {emit}) {
         const {notification_duration} = window.kiosk
         const {toRef} = window.kiosk.vue
-        
+
         const backgroundUrl = toRef(props, "backgroundImg");
 
         const renderCategory = (category) => {
