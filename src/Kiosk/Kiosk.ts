@@ -20,7 +20,7 @@ export default class KioskSlideModule extends SlideModule {
   async onReady() {
     await this.context.assetsStorage().then(async (ability: IAssetsStorageAbility) => {
       if (this.context.slide.data.background) {
-        await ability.downloadAndGet(this.context.slide.data.background);
+        await ability.getOrDownload(this.context.slide.data.background);
       }
       for (const category of this.context.slide.data.categories) {
         if (category.type === "folders") {
@@ -28,7 +28,7 @@ export default class KioskSlideModule extends SlideModule {
             for (const media of folder.medias) {
               try {
                 console.log("Downloading", media.url)
-                await ability.downloadAndGet(media.url, { noRetry: true },)
+                await ability.getOrDownload(media.url, { noRetry: true },)
               } catch (e) {
                 console.log("error")
                 console.error(e);
@@ -42,14 +42,6 @@ export default class KioskSlideModule extends SlideModule {
   };
 
   setup(props: Record<string, any>, vue: VueInstance, context: ISlideContext) {
-    const en = require("/home/scleriot/Dev/dynamicscreen/app-server/storage/apps//app-kiosk-comeen-play/0.2.0/languages/en.json");
-    const fr = require("/home/scleriot/Dev/dynamicscreen/app-server/storage/apps//app-kiosk-comeen-play/0.2.0/languages/fr.json");
-    const translator: any = this.context.translator;
-    translator.addResourceBundle('en', 'kiosk', en);
-    translator.addResourceBundle('fr', 'kiosk', fr);
-    this.t = (key: string, namespace: string = 'kiosk') => translator.t(key, { ns: namespace });
-
-
     const { h, reactive, ref, computed } = vue;
 
     const slide = reactive(props.slide) as IPublicSlide;
@@ -90,7 +82,7 @@ export default class KioskSlideModule extends SlideModule {
     this.context.onPrepare(async () => {
       if (slide.data.background) {
         const ability = await context.assetsStorage();
-        backgroundUrl.value = await ability.downloadAndGet(slide.data.background);
+        backgroundUrl.value = await ability.getOrDownload(slide.data.background);
       }
     });
 

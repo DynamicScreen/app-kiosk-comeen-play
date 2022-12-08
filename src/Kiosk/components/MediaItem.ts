@@ -1,8 +1,9 @@
-import {defineComponent, h, PropType, Suspense, toDisplayString} from "vue";
+import {defineComponent, h, onUnmounted, PropType, Suspense, toDisplayString} from "vue";
 import PreviewImageModal from "./PreviewImageModal";
 import PreviewVideoModal from "./PreviewVideoModal";
 import PreviewPDFModal from "./PreviewPDFModal";
 import moment from "moment";
+import { IAssetsStorageAbility } from "@comeen/comeen-play-sdk-js";
 
 const loadMedia = (url: string) => {
     return new Promise(async (resolve, reject) => {
@@ -72,6 +73,12 @@ export default defineComponent({
                 ])
             }
         }
+
+        onUnmounted(() => {
+          window.kiosk.context.assetsStorage().then(async (ability: IAssetsStorageAbility) => {
+            ability.revokeURL(displayableUrl.value)
+          })
+        })
 
         const renderNotificationBuble = () => {
           const {notification_duration} = window.kiosk
