@@ -59,7 +59,8 @@ export default defineComponent({
                 delete categoryToSave["folders"];
             }
             if (type.value === "folders") {
-                categoryToSave["folders"] = toRaw(folders.value);
+                categoryToSave["folders"] = JSON.stringify(toRaw(folders.value));
+                console.log("save cat", categoryToSave["folders"])
                 delete categoryToSave["links"];
             }
 

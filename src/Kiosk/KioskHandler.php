@@ -17,6 +17,10 @@ class KioskHandler extends SlideHandler
 
         foreach ($categoriesOptions as $key => $category) {
             if ($category["type"] === "folders") {
+                if (!is_array($category["folders"])) {
+                    $category["folders"] = json_decode($category["folders"], false);
+                }
+
                 $categoryFolders = $category["folders"];
                 $medias = [];
                 foreach ($categoryFolders as $idFolder) {
@@ -25,6 +29,10 @@ class KioskHandler extends SlideHandler
                     array_push($medias, $list->folders[$folderId]);
                 }
                 $categoriesOptions[$key]["folders"] = $medias;
+            } else if($category["type"] === "links") {
+                if (!is_array($category["links"])) {
+                    $categoriesOptions[$key]["links"] = json_decode($category["links"], true);
+                }
             }
         }
 
